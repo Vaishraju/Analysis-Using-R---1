@@ -1,5 +1,5 @@
 ---
-title: "Data Analysis Project"
+title: "Data Analysis of Insurance Company"
 ---
 
 
@@ -12,10 +12,7 @@ knitr::opts_chunk$set(echo = TRUE,
 
 
 
-# Student Information
 
-**Name**: Vaishnavi Raju Echarlu Thimmaraju
-**G Number**:G01350735
 
 
 
