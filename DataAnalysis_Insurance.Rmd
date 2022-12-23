@@ -331,44 +331,6 @@ ggplot(claims_df_updates_q8, aes( x = income_range )) +
 
 ```
 
-# Summary of Results
-
-
-1.  Introduction
-
-
-The Insurance company aims to improve profits and seeks to determine all factors that can lead the company towards better profits and income. It is important for the company to improve profits or the company can soon go out of business.
-The goal of analysis based on data provided by the Insurance company was to study and analyze factors contributing the profit/loss in the company and come up with a set of recommended plan of actions to tweak some approaches and tackle factors affecting the monetary growth of the company and thereby improving profits. As a Data analyst, I was trying to single out factors directly responsible for company profits and coming up with a desired scheme to improve and work on maximizing profits. If the suggested recoomendations are followed by the company, then they can see a significant increase in profits as the analysed data suggests.
-
-<br>
-
-2.  Highlights and key findings :
-
-There were some very interesting findings while exploring and analyzing all aspects of the comapny's data
-  1. Sales agents are a huge factor in customer acquisition for the company
-  2. Despite higher cost to company to pay for claims by customers having luxury cars, surprisingly these class of vehicles bring in the highest profits to the company
-  3. Urban areas are more crowded and traffic is worse compared to other areas. Interestingly, sub urban areas being less crowded has more claims per year reducing company profits.
-  4. As expected, the coverage plan that costs more brings in lesser customers but higher profits for the company.
-
-<br>
-
-3.  Recommendations:
-
-Based on thorough analysis of various aspects affecting the company's profits, the following recommendations are suggested for maximizing the Insurance company profits:
-  1. California must be a high priority state to improve average profits as it brings in good monetary profit and Nevada must be a priority to acquire more customers, so extensive marketing is needed in Nevada.
-  2. Customers should be targeted to pay a premium of $150-200 and customers paying lower than this must be given more incentives to pay in the company's desired premium payment range.
-  3. The company should focus on getting more people with higher income and owners of luxury vehicles to take up premium coverage. Since sales agents bring in most customers, these third party agents must be given incentives to bring in more premium coverage customers.
-  4. Customers in less urban areas must also be approached to take up insurance coverage. The company should also selectively target more customers with luxury cars.
-  
-  
-
-## Executive Summary
-
-
-The Insurance company has tasked me to improve profits, after thorough analysis and graphical representation of the analysis, 
-Insurance company obtains more profit from California state. On increasing the number of customers in the state can have an impact in profit.Company needs to acquire more and more customers from Nevada as its average profit is higher than the rest.
-More customers with luxury cars needs to be targeted to increase the profit as it average loss is 0%. 
-Acquiring customer from rural and urban areas can increase the profit.People with income above $60000 needs to pushed to take up extended or premium coverage.Customers from urban and rural areas needs to be added more to the company as this adds overall profit.
 
 
 
