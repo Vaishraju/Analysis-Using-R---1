@@ -1,0 +1,389 @@
+---
+title: "Data Analysis Project"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, 
+                      message = FALSE, 
+                      warning = FALSE,
+                      comment = "")
+```
+
+
+
+# Student Information
+
+**Name**: Vaishnavi Raju Echarlu Thimmaraju
+**G Number**:G01350735
+
+
+
+
+```{r}
+library(tidyverse)
+
+claims_df <- readRDS(url('https://gmubusinessanalytics.netlify.app/data/claims_df.rds'))
+
+```
+
+
+### Raw Data
+
+```{r}
+
+claims_df
+
+```
+<br>
+<br>
+
+
+# Exploratory Data Analysis
+
+## Question 1
+
+Which state is responsible for the majority of the profits?
+
+
+
+**Answer**:
+California has the highest monetary profit at $1898706 which constitues 32.95% of the overall profit. Although the average profit is comparitively lower, it still rakes in the highest profit margin.
+The total number of claims in California is 5185.
+
+
+States like Washington and Nevada has the least number of claims.
+
+
+To add additional R code chunks for your work, select `Insert` then `R` from the top of this notebook file.
+
+```{r}
+# Question 01
+
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+library(tidyverse)
+library(skimr)
+library(usmap)
+claims_df <- readRDS(url('https://gmubusinessanalytics.netlify.app/data/claims_df.rds'))
+claims_df = claims_df %>% mutate(revenue = monthly_premium * months_policy_active)
+claims_df_1 = claims_df %>% mutate(state = claims_df$customer_state)
+profit = sum(claims_df$customer_lifetime_value)
+profit
+q1 = claims_df_1 %>% group_by(state) %>% summarize(
+  total_revenue = sum(revenue),
+  count = n(),
+  total_claims = sum(total_claims),
+  sum_amount_claimed = sum(total_claims_amount),
+  totalprofit = sum(customer_lifetime_value),
+  avg_profit = mean(customer_lifetime_value),
+  percentage_profit = (totalprofit/5761975) *100)
+q1
+
+
+
+plot_usmap(data = q1,values = "totalprofit",include = c("CA","WA","OR","NV","AZ"), labels = TRUE) + 
+  scale_fill_gradient(name = "Profit", low = "pink", high =  "red", na.value = "grey50") +labs(title = "Statewise customer value")
+
+```
+
+
+
+## Question 2
+
+How is Monthly premiun paid affect company profits?
+
+**Answer**:
+
+Customers paying higher monthly premium( $100 - $150), although  1835 customers pay in this range. They contribute to an total profit of $3219546
+However when you compare this to the most widely paid montly premium in the range of ($50 - $100) by 4052 customers , the profit obtained is $530130. 
+
+
+```{r}
+ggplot(claims_df,aes(x = monthly_premium)) + geom_histogram(fill = "#006EA1", color = "white" , bins = 30) +
+  labs(title =" Monthly premium paid by Customers", x = "Monthly premium amount")
+claims_df_updates_3 = claims_df %>% mutate(monthly_premium_range = cut_width(monthly_premium, width = 50, boundary = 0))
+#summary stats
+
+
+claims_df_updates_3 %>% group_by(monthly_premium_range) %>% summarize(
+  count = n(),
+  avg_monthly_premium = mean(monthly_premium),
+  avg_cust_value = mean(customer_lifetime_value),
+  total_profit = sum(customer_lifetime_value)
+)
+
+
+
+
+```
+
+
+
+## Question 3
+
+Is the profit of the company getting affected by the type of coverage chosen by the customers along with the monthly premium paid?
+
+**Answer**:
+
+Company faces loss of around 47% in the Basic coverage opted by the 3815 customers paying an average of $82 per month.Major loss is incurred by the customer choosing basic coverage and paying monthly premium in the range of $61 to $75.
+
+Executive coverage also faces loss of 18% opted by 1858 customer whose average monthly membership is $104.
+
+Premium coverage faces the least loss of 10% opted by 576 customers.
+
+
+
+
+
+
+```{r}
+
+ggplot(claims_df, aes(x = monthly_premium, y = customer_lifetime_value)) + 
+  geom_point(color = "green") +facet_wrap(~coverage ,nrow=3) +labs(title = "Relationship between Monthly premium,Customer_lifetime_value and the coverage ")
+
+#Summary needs to be done
+claims_df %>% group_by(coverage) %>% summarize(
+  avg_monthly_premium = mean(monthly_premium),
+  count= n(),
+  avg_loss_cust = mean(customer_lifetime_value<0)
+)
+
+
+
+
+```
+
+
+
+
+## Question 4
+
+How is company's profit affected by the different sales channel?
+
+**Answer**:
+
+Out of 4 sales channel, 2359 customers who took up coverage through third party agents have fetched highest profit of $2288145. 
+Customers joining the company through Branch, call center and web brings around same average profit.
+Web sales channel has  attracted 901 customers which is the least.
+
+```{r}
+hw <- theme_gray()+ theme(
+  plot.title=element_text(hjust=0.5),
+  plot.subtitle=element_text(hjust=0.5),
+  plot.caption=element_text(hjust=-.5),
+  # strip.text.y = element_blank(),
+  strip.background=element_rect(fill=rgb(.9,.95,1),
+                                colour=gray(.5), size=.2),
+  panel.border=element_rect(fill=FALSE,colour=gray(.70)),
+  panel.grid.minor.y = element_blank(),
+  panel.grid.minor.x = element_blank(),
+  panel.spacing.x = unit(0.10,"cm"),
+  panel.spacing.y = unit(0.05,"cm"),
+  # axis.ticks.y= element_blank()
+  axis.ticks=element_blank(),
+  axis.text=element_text(colour="black"),
+  axis.text.y=element_text(margin=margin(0,3,0,3)),
+  axis.text.x=element_text(margin=margin(-1,0,3,0),angle=90)
+)
+
+
+
+ggplot(claims_df, aes(x = customer_lifetime_value)) +
+  geom_histogram(fill = "#006EA1", color = "white" , bins = 20) + 
+  facet_grid(~sales_channel) +hw
+#summary stats needs to be made
+
+claims_df %>% group_by(sales_channel) %>% summarize(
+  count= n(),
+  total_profit = sum(customer_lifetime_value),
+  avg_profit = mean(customer_lifetime_value)
+  
+)
+
+
+
+```
+
+
+
+
+## Question 5
+
+Which residence type has the more more of claims?
+
+
+**Answer**:
+
+Sub-Urban has the highest number of 2 times claim and 3 times claim accounting for 2193 and 1165 customers respectively.
+
+Second highest claims are seen in urban areas where the number of 2 times claimed account for 885  customers.
+
+```{r}
+
+
+ggplot(claims_df, aes( x = residence_type, fill = residence_type)) + geom_bar(stat = "count" ) +
+  facet_wrap(~total_claims) +hw +labs(title = "Residence type affecting Number of claims")
+
+# summary needs to be done
+
+claims_df %>% group_by(residence_type, total_claims) %>% summarize(
+  count = n(),
+)
+
+
+
+
+
+```
+
+
+## Question 6
+
+Which vehicle class fetches higher profit?
+
+**Answer**:
+
+Luxury Car has not brought any loss to the company from all the three coverage types. Its average loss is 0%.
+2-Door cars and 4-Door cars bring the highest loss having  1292 and 3124 claims respectively.
+
+Customer with 2-Door basic coverage and customers with 4-Door basic coverage bring the highest loss to the company.
+
+Average profit for 2-door car is $269 which is the least among other vehicle class.
+
+
+```{r}
+ggplot(claims_df,aes(x = vehicle_class, y = customer_lifetime_value, fill = coverage)) + geom_boxplot() +
+  labs(title = "Coverage and Vehicle class affecting profits", x = "Vehicle Class", y = "Profit" ) +hw
+
+claims_df = claims_df %>% mutate(revenue = monthly_premium * months_policy_active)
+# profit of the company increases with the luxury SUV
+#2 door cars and 4 door cars bring loss
+
+
+claims_df %>% group_by(vehicle_class) %>% summarize(
+  number_of_claims = n(),
+  avg_profit = mean(customer_lifetime_value),
+  avg_revenue = mean(revenue),
+  loss_occured = any(customer_lifetime_value<0),
+  avg_loses = mean(customer_lifetime_value < 0)
+)
+
+
+
+
+
+
+```
+
+
+## Question 7
+
+Which policies offers higher profit to the company?
+
+
+**Answer**:
+
+4658 Customers have opted for personal policy which fetched a profit of $4302430. 
+Special policies are least bought by the customers whose average profit($745.9582) is less compared to other policies.
+
+
+```{r}
+
+
+
+
+q4 = claims_df %>% group_by(policy) %>% summarize(
+  avg_profit = mean(customer_lifetime_value),
+  count = n(),
+  total_profit = sum(customer_lifetime_value),
+  med_profot = median(customer_lifetime_value)
+)
+q4
+
+pie(q4$avg_profit , labels = c("Personal","Corporate","Special") , edges=10 , main ="Profit through different Policies"
+    ) 
+
+
+
+
+
+```
+
+
+
+## Question 8
+
+What is the relationship between the coverage plan chosen by the customer and their income?
+
+**Answer**:
+
+Customers with income in the range of $20000 to $40000 choose Basic coverage over other plans.
+
+
+```{r}
+
+claims_df_updates_q8 = claims_df %>% mutate(income_range = cut_width(income, width = 20000, boundary = 0))
+
+
+ggplot(claims_df_updates_q8, aes( x = income_range )) +
+  geom_bar(stat = "count", color = "blue") +hw +labs(title ="Income of the customer and the coverage opted", x = "IncomeRange",y = "count") +facet_wrap(~coverage)
+
+
+
+```
+
+# Summary of Results
+
+
+1.  Introduction
+
+
+The Insurance company aims to improve profits and seeks to determine all factors that can lead the company towards better profits and income. It is important for the company to improve profits or the company can soon go out of business.
+The goal of analysis based on data provided by the Insurance company was to study and analyze factors contributing the profit/loss in the company and come up with a set of recommended plan of actions to tweak some approaches and tackle factors affecting the monetary growth of the company and thereby improving profits. As a Data analyst, I was trying to single out factors directly responsible for company profits and coming up with a desired scheme to improve and work on maximizing profits. If the suggested recoomendations are followed by the company, then they can see a significant increase in profits as the analysed data suggests.
+
+<br>
+
+2.  Highlights and key findings :
+
+There were some very interesting findings while exploring and analyzing all aspects of the comapny's data
+  1. Sales agents are a huge factor in customer acquisition for the company
+  2. Despite higher cost to company to pay for claims by customers having luxury cars, surprisingly these class of vehicles bring in the highest profits to the company
+  3. Urban areas are more crowded and traffic is worse compared to other areas. Interestingly, sub urban areas being less crowded has more claims per year reducing company profits.
+  4. As expected, the coverage plan that costs more brings in lesser customers but higher profits for the company.
+
+<br>
+
+3.  Recommendations:
+
+Based on thorough analysis of various aspects affecting the company's profits, the following recommendations are suggested for maximizing the Insurance company profits:
+  1. California must be a high priority state to improve average profits as it brings in good monetary profit and Nevada must be a priority to acquire more customers, so extensive marketing is needed in Nevada.
+  2. Customers should be targeted to pay a premium of $150-200 and customers paying lower than this must be given more incentives to pay in the company's desired premium payment range.
+  3. The company should focus on getting more people with higher income and owners of luxury vehicles to take up premium coverage. Since sales agents bring in most customers, these third party agents must be given incentives to bring in more premium coverage customers.
+  4. Customers in less urban areas must also be approached to take up insurance coverage. The company should also selectively target more customers with luxury cars.
+  
+  
+
+## Executive Summary
+
+
+The Insurance company has tasked me to improve profits, after thorough analysis and graphical representation of the analysis, 
+Insurance company obtains more profit from California state. On increasing the number of customers in the state can have an impact in profit.Company needs to acquire more and more customers from Nevada as its average profit is higher than the rest.
+More customers with luxury cars needs to be targeted to increase the profit as it average loss is 0%. 
+Acquiring customer from rural and urban areas can increase the profit.People with income above $60000 needs to pushed to take up extended or premium coverage.Customers from urban and rural areas needs to be added more to the company as this adds overall profit.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
